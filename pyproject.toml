@@ -22,7 +22,7 @@ dynamic = ["version"]
 Home = "https://github.com/pretix/prisma-sbom-submit"
 
 [project.scripts]
-prisma-sbom-submit = "prisma_sbom_submit:cli"
+prisma-sbom-submit = "prisma_sbom_submit.cli:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "prisma_sbom_submit.__version__"}
