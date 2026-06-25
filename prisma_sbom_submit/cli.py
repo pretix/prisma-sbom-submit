@@ -23,9 +23,9 @@ def main():
     if "GITHUB_ACTION" in os.environ:
         is_rolling = os.environ.get("GITHUB_REF_TYPE") != "tag"
         if is_rolling:
-            version_name = os.environ.get("GITHUB_REF", "").removesuffix("refs/heads/")
+            version_name = os.environ.get("GITHUB_REF", "").removeprefix("refs/heads/")
         else:
-            version_name = os.environ.get("GITHUB_REF", "").removesuffix("refs/tags/")
+            version_name = os.environ.get("GITHUB_REF", "").removeprefix("refs/tags/")
     elif "CI_JOB_ID" in os.environ:
         is_rolling = not os.environ.get("CI_COMMIT_TAG")
         if is_rolling:
