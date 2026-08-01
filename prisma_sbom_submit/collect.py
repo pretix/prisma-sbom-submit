@@ -39,17 +39,16 @@ def discover_npm_projects(path):
 def generate_npm_sbom(path):
     cwd = os.getcwd()
     npm_tool_dir = os.path.join(cwd, ".sbom-npm-tools")
+    npm = os.environ.get("NPM", "npm")
     subprocess.check_call(
-        "npm install --global @cyclonedx/cyclonedx-npm",
+        [npm, "install", "--global", "@cyclonedx/cyclonedx-npm"],
         env={
             "NPM_CONFIG_PREFIX": npm_tool_dir
         },
-        shell=True,
     )
-    print(f"Install packages")
     try:
         os.chdir(path)
-        subprocess.check_call("npm ci", shell=True)
+        subprocess.check_call([npm, "ci"])
         print(f"Generate SBOM")
         sbom = subprocess.check_output(
             [os.path.join(npm_tool_dir, "bin", "cyclonedx-npm")],
