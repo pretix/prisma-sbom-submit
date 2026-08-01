@@ -6,15 +6,10 @@ import sys
 import zoneinfo
 from datetime import datetime
 from urllib.request import urlopen, Request
+from .collect import auto_bom
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog='uploader.py',
-        description='Upload SBOMs to PRISMA',
-    )
-    parser.add_argument("filename")
-    parser.add_argument("--server", required=True)
-    args = parser.parse_args()
+
+def upload(args):
     tz = zoneinfo.ZoneInfo("Europe/Berlin")
 
     with open(args.filename, "r") as f:
@@ -61,3 +56,32 @@ def main():
         if response.status not in (200, 201, 204):
             sys.exit(1)
 
+
+def collect(args):
+    with open(args.output_file, "w") as f:
+        json.dump(list(auto_bom(args.directory)), f)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog='prisma-sbom-submit',
+        description='Upload SBOMs to PRISMA',
+    )
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    parser_upload = subparsers.add_parser('upload')
+    parser_upload.add_argument("filename")
+    parser_upload.add_argument("--server", required=True)
+
+    parser_collect = subparsers.add_parser('collect')
+    parser_collect.add_argument("directory", default=".")
+    parser_collect.add_argument("output_file", default="sbom.json")
+
+    args = parser.parse_args()
+
+    if args.command == "collect":
+        collect(args)
+
+    elif args.command == "upload":
+        upload(args)

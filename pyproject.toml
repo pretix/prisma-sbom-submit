@@ -18,6 +18,12 @@ classifiers = [
 ]
 dynamic = ["version"]
 
+[project.optional-dependencies]
+python = [
+    "cyclonedx-bom",
+    "uv",
+]
+
 [project.urls]
 Home = "https://github.com/pretix/prisma-sbom-submit"
 
