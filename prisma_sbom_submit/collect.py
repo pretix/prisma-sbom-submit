@@ -4,6 +4,7 @@ import json
 import subprocess
 import tempfile
 import sys
+import shlex
 
 
 def discover_python_projects(path):
@@ -40,21 +41,13 @@ def generate_npm_sbom(path):
     cwd = os.getcwd()
     npm_tool_dir = os.path.join(cwd, ".sbom-npm-tools")
     npm = os.environ.get("NPM", "npm")
-    subprocess.check_call(["bash", "-c", "/opt/hostedtoolcache/node/24.19.0/x64/bin/npm install --global @cyclonedx/cyclonedx-npm"])
-    subprocess.check_call(
-        [npm, "install", "--global", "@cyclonedx/cyclonedx-npm"],
-        env={
-            "NPM_CONFIG_PREFIX": npm_tool_dir
-        },
-        shell=True,
-    )
+    # No idea why the explicit bash call is necessary, only way I could make it work on GitHub actions
+    subprocess.check_call(["bash", "-c", f"{shlex.quote(npm)} --global @cyclonedx/cyclonedx-npm"])
     try:
         os.chdir(path)
-        subprocess.check_call([npm, "ci"])
+        subprocess.check_call(["bash", "-c", f"{shlex.quote(npm)} ci"])
         print(f"Generate SBOM")
-        sbom = subprocess.check_output(
-            [os.path.join(npm_tool_dir, "bin", "cyclonedx-npm")],
-        )
+        sbom = subprocess.check_output(["bash", "-c", f'{shlex.quote(os.path.join(npm_tool_dir, "bin", "cyclonedx-npm"))}'])
     finally:
         os.chdir(cwd)
     return json.loads(sbom.strip())
