@@ -1,0 +1,17 @@
+[project]
+name = "prisma-upload-test"
+version = "0.0.0"
+description = "Text manifest"
+
+dependencies = [
+    "requests"
+]
+
+[build-system]
+requires = [
+    "setuptools",
+    "pretix-plugin-build",
+]
+
+[tool.setuptools]
+include-package-data = true
