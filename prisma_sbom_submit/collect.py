@@ -45,6 +45,7 @@ def generate_npm_sbom(path):
         env={
             "NPM_CONFIG_PREFIX": npm_tool_dir
         },
+        shell=True,
     )
     try:
         os.chdir(path)
