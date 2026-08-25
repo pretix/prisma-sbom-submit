@@ -40,6 +40,7 @@ def generate_npm_sbom(path):
     cwd = os.getcwd()
     npm_tool_dir = os.path.join(cwd, ".sbom-npm-tools")
     npm = os.environ.get("NPM", "npm")
+    subprocess.check_call(["bash", "-c", "/opt/hostedtoolcache/node/24.19.0/x64/bin/npm install --global @cyclonedx/cyclonedx-npm"])
     subprocess.check_call(
         [npm, "install", "--global", "@cyclonedx/cyclonedx-npm"],
         env={
