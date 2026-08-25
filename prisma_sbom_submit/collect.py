@@ -43,7 +43,7 @@ def generate_npm_sbom(path):
     npm = os.environ.get("NPM", "npm")
     # No idea why the explicit bash call is necessary, only way I could make it work on GitHub actions
     try:
-        subprocess.check_call(["bash", "-c", f"{shlex.quote(npm)} --global @cyclonedx/cyclonedx-npm"])
+        subprocess.check_call(["bash", "-c", f"{shlex.quote(npm)} install --global @cyclonedx/cyclonedx-npm"])
     except subprocess.CalledProcessError as e:
         print(e.stdout, e.stderr)
         raise
