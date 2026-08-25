@@ -15,7 +15,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-22.04
-    name: Submission
+    name: Auto collection
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
