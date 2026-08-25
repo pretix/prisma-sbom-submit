@@ -10,7 +10,7 @@ def discover_python_projects(path):
     if os.path.exists(os.path.join(path, "pyproject.toml")):
         yield path
     for p in glob.glob("**/pyproject.toml", root_dir=path):
-        yield os.dirname(os.path.join(path, p))
+        yield os.path.dirname(os.path.join(path, p))
 
 
 def generate_python_sbom(path):
@@ -33,7 +33,7 @@ def discover_npm_projects(path):
     if os.path.exists(os.path.join(path, "package.json")):
         yield path
     for p in glob.glob("**/package.json", root_dir=path):
-        yield os.dirname(os.path.join(path, p))
+        yield os.path.dirname(os.path.join(path, p))
 
 
 def generate_npm_sbom(path):
