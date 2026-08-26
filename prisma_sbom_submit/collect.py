@@ -10,7 +10,7 @@ import shlex
 def discover_python_projects(path):
     if os.path.exists(os.path.join(path, "pyproject.toml")):
         yield path
-    for p in glob.glob("**/pyproject.toml", root_dir=path):
+    for p in glob.glob("**/pyproject.toml", root_dir=path, recursive=True):
         yield os.path.dirname(os.path.join(path, p))
 
 
@@ -33,7 +33,9 @@ def generate_python_sbom(path):
 def discover_npm_projects(path):
     if os.path.exists(os.path.join(path, "package.json")):
         yield path
-    for p in glob.glob("**/package.json", root_dir=path):
+    for p in glob.glob("**/package.json", root_dir=path, recursive=True):
+        if "node_modules" in p:
+            continue
         yield os.path.dirname(os.path.join(path, p))
 
 
@@ -53,6 +55,17 @@ def generate_npm_sbom(path):
     return json.loads(sbom.strip())
 
 
+def discover_gradle_results(path):
+    aggregate_found = False
+    for p in glob.glob("**/build/reports/cyclonedx/bom.json", root_dir=path, recursive=True):
+        aggregate_found = True
+        yield os.path.dirname(os.path.join(path, p))
+
+    if not aggregate_found:
+        for p in glob.glob("**/build/reports/cyclonedx-direct/bom.json", root_dir=path, recursive=True):
+            yield p
+
+
 def auto_bom(path):
     for p in discover_python_projects(path):
         print(f"Discovered Python project at path {p}")
@@ -60,3 +73,7 @@ def auto_bom(path):
     for p in discover_npm_projects(path):
         print(f"Discovered NPM project at path {p}")
         yield generate_npm_sbom(p)
+    for p in discover_gradle_results(path):
+        print(f"Discovered gradle-generated SBOM at path {p}")
+        with open(p, 'r') as f:
+            yield json.load(f)
