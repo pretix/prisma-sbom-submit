@@ -49,7 +49,7 @@ def generate_npm_sbom(path):
         os.chdir(path)
         subprocess.check_call(["bash", "-c", f"{shlex.quote(npm)} ci"])
         print(f"Generate SBOM")
-        sbom = subprocess.check_output(["bash", "-c", f'{shlex.quote(os.path.join(npm_tool_dir, "bin", "cyclonedx-npm"))}'])
+        sbom = subprocess.check_output(["bash", "-c", f'{shlex.quote(os.path.join(npm_tool_dir, "bin", "cyclonedx-npm"))} --omit dev --omit peer'])
     finally:
         os.chdir(cwd)
     return json.loads(sbom.strip())
